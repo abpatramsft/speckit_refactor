@@ -13,6 +13,5 @@ As a part of this exercise here, I have added three new skills (speckit commands
 4. speckit.code_simplify: For simiplifying complex and overwritten code to minimise tech debts
 
 
-> **Note:** This repository contains some of Anthropic's implementation of open source skills for Claude. For information about the Agent Skills standard, see [agentskills.io](http://agentskills.io).
-> **Note:** This repository is baseline fork of the open source [spec-kit](https://github.com/github/spec-kit) based development framework
+> **Note:** This repository contains some of Anthropic's implementation of open source skills for Claude. For information about the Agent Skills standard, see [agentskills.io](http://agentskills.io). Additionaly, this repository is baseline fork of the open source [spec-kit](https://github.com/github/spec-kit) based development framework
 
