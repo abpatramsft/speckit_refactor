@@ -20,12 +20,12 @@ The addition of the frontend design skill significantly enhances the development
 ### Without Frontend Design Skills
 Standard development approach without specialized design guidance:
 
-![Demo without frontend design skills](./assets/website_without_skills.mp4)
+![Demo without frontend design skills](./assets/website_without_skills.gif)
 
 ### With Frontend Design Skills
 Enhanced development using `/speckit.frontend_design` for production-grade aesthetics:
 
-![Demo with frontend design skills](./assets/website_with_skills.mp4)
+![Demo with frontend design skills](./assets/website_with_skills.gif)
 
 The frontend design skill enables:
 - **Bold Aesthetic Direction**: Intentional design choices that create memorable interfaces
