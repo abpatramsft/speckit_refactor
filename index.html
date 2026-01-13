@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MERIDIAN — Stories That Matter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a2332;
+            --primary-navy: #2d3e50;
+            --accent-terracotta: #d4836f;
+            --accent-sage: #9caf88;
+            --accent-gold: #c9a961;
+            --text-light: #f5f3ef;
+            --text-muted: #b8b3a8;
+            --bg-dark: #0f1419;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent-terracotta);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease, border-color 0.3s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-terracotta);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.3s ease;
+        }
+
+        .cursor.hover {
+            transform: scale(2);
+            border-color: var(--accent-gold);
+        }
+
+        /* Background Texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 131, 111, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(156, 175, 136, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(15, 20, 25, 0.95) 0%, transparent 100%);
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent-terracotta);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-light);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            z-index: 1;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            color: var(--accent-terracotta);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: var(--text-light);
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        .hero h1 strong {
+            font-weight: 700;
+            font-style: italic;
+            color: var(--accent-gold);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.7s forwards;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            border: 2px solid var(--accent-terracotta);
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            font-size: 0.9rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.9s forwards;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-terracotta);
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+
+        .cta-button:hover::before {
+            left: 0;
+        }
+
+        .hero-decoration {
+            position: absolute;
+            right: -10%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60%;
+            height: 80%;
+            background: linear-gradient(135deg, var(--accent-terracotta) 0%, var(--accent-sage) 100%);
+            opacity: 0.03;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-50%) translateX(-30px); }
+        }
+
+        /* Featured Section */
+        .featured {
+            padding: 8rem 4rem;
+            position: relative;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .section-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: var(--text-light);
+        }
+
+        .section-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            transition: color 0.3s ease;
+        }
+
+        .section-link:hover {
+            color: var(--accent-terracotta);
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .article-card {
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .article-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .article-card.large {
+            grid-row: span 2;
+        }
+
+        .article-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+            aspect-ratio: 16/10;
+        }
+
+        .article-card.large .article-image {
+            aspect-ratio: 3/4;
+        }
+
+        .article-card:hover .article-image {
+            transform: scale(1.05);
+        }
+
+        .article-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 3rem;
+            background: linear-gradient(to top, rgba(15, 20, 25, 0.95) 0%, transparent 100%);
+            transition: padding 0.4s ease;
+        }
+
+        .article-card:hover .article-overlay {
+            padding-bottom: 3.5rem;
+        }
+
+        .article-category {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(212, 131, 111, 0.2);
+            color: var(--accent-terracotta);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+            border: 1px solid var(--accent-terracotta);
+        }
+
+        .article-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .article-card.large .article-title {
+            font-size: 2.8rem;
+        }
+
+        .article-excerpt {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Stories Grid */
+        .stories {
+            padding: 4rem 4rem 8rem;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+
+        .story-card {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .story-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .story-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            transition: transform 0.6s ease;
+        }
+
+        .story-card:hover .story-image {
+            transform: scale(1.02) translateY(-4px);
+        }
+
+        .story-category {
+            color: var(--accent-sage);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.8rem;
+            display: block;
+        }
+
+        .story-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .story-excerpt {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .story-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Newsletter */
+        .newsletter {
+            padding: 6rem 4rem;
+            background: linear-gradient(135deg, rgba(212, 131, 111, 0.1) 0%, rgba(156, 175, 136, 0.1) 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .newsletter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent 0%, var(--accent-terracotta) 50%, transparent 100%);
+        }
+
+        .newsletter-content {
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .newsletter-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .newsletter h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+
+        .newsletter p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--accent-terracotta);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .newsletter-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .newsletter-button {
+            padding: 1rem 2.5rem;
+            background: var(--accent-terracotta);
+            border: none;
+            color: var(--text-light);
+            font-family: 'Manrope', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            cursor: none;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-button:hover {
+            background: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 4rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .footer-tagline {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .footer-section h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-terracotta);
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            nav, .hero, .featured, .stories, .newsletter {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+
+            .featured-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-card.large {
+                grid-row: span 1;
+            }
+
+            .stories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .stories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <nav>
+        <div class="logo">MERIDIAN</div>
+        <ul class="nav-links">
+            <li><a href="#stories">STORIES</a></li>
+            <li><a href="#culture">CULTURE</a></li>
+            <li><a href="#ideas">IDEAS</a></li>
+            <li><a href="#about">ABOUT</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-eyebrow">EST. 2026 — INDEPENDENT VOICES</div>
+            <h1>Stories that <strong>resonate</strong>, perspectives that challenge</h1>
+            <p>We explore the intersection of culture, technology, and human experience through deeply researched narratives and bold commentary.</p>
+            <a href="#featured" class="cta-button">EXPLORE LATEST</a>
+        </div>
+        <div class="hero-decoration"></div>
+    </section>
+
+    <section class="featured" id="featured">
+        <div class="section-header">
+            <h2 class="section-title">Featured Stories</h2>
+            <a href="#all" class="section-link">VIEW ALL →</a>
+        </div>
+
+        <div class="featured-grid">
+            <article class="article-card large">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&h=1000&fit=crop" alt="The Future of Work" class="article-image">
+                <div class="article-overlay">
+                    <span class="article-category">TECHNOLOGY</span>
+                    <h3 class="article-title">The Quiet Revolution in Remote Collaboration</h3>
+                    <p class="article-excerpt">How distributed teams are reshaping creativity, productivity, and the very definition of workplace culture in the digital age.</p>
+                    <div class="article-meta">
+                        <span>Maya Chen</span>
+                        <span>12 min read</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="article-card">
+                <img src="https://images.unsplash.com/photo-1511376777868-611b54f68947?w=600&h=400&fit=crop" alt="Music Evolution" class="article-image">
+                <div class="article-overlay">
+                    <span class="article-category">CULTURE</span>
+                    <h3 class="article-title">Vinyl's Unexpected Renaissance</h3>
+                    <p class="article-excerpt">Why analog is winning in a digital world.</p>
+                    <div class="article-meta">
+                        <span>Alex Rivera</span>
+                        <span>8 min read</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="article-card">
+                <img src="https://images.unsplash.com/photo-1495954484750-af469f2f9be5?w=600&h=400&fit=crop" alt="Architecture" class="article-image">
+                <div class="article-overlay">
+                    <span class="article-category">DESIGN</span>
+                    <h3 class="article-title">Building for Climate Chaos</h3>
+                    <p class="article-excerpt">Architects reimagine urban spaces for an uncertain future.</p>
+                    <div class="article-meta">
+                        <span>Jordan Park</span>
+                        <span>10 min read</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="stories" id="stories">
+        <div class="section-header">
+            <h2 class="section-title">Recent Stories</h2>
+            <a href="#archive" class="section-link">ARCHIVE →</a>
+        </div>
+
+        <div class="stories-grid">
+            <article class="story-card">
+                <img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=600&h=400&fit=crop" alt="Story 1" class="story-image">
+                <span class="story-category">TRAVEL</span>
+                <h3 class="story-title">The Last Quiet Places on Earth</h3>
+                <p class="story-excerpt">A photographic journey through regions untouched by the noise of modern civilization.</p>
+                <div class="story-meta">Sarah Mitchell • 6 min read</div>
+            </article>
+
+            <article class="story-card">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop" alt="Story 2" class="story-image">
+                <span class="story-category">BUSINESS</span>
+                <h3 class="story-title">Startups Embrace the Four-Day Week</h3>
+                <p class="story-excerpt">What happens when productivity and wellness become equally important metrics.</p>
+                <div class="story-meta">James Ko • 7 min read</div>
+            </article>
+
+            <article class="story-card">
+                <img src="https://images.unsplash.com/photo-1481026469463-66327c86e544?w=600&h=400&fit=crop" alt="Story 3" class="story-image">
+                <span class="story-category">SCIENCE</span>
+                <h3 class="story-title">Mapping the Deep Ocean's Mysteries</h3>
+                <p class="story-excerpt">Marine biologists discover ecosystems that challenge our understanding of life itself.</p>
+                <div class="story-meta">Dr. Elena Vasquez • 9 min read</div>
+            </article>
+
+            <article class="story-card">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop" alt="Story 4" class="story-image">
+                <span class="story-category">PROFILE</span>
+                <h3 class="story-title">The Chef Making Fine Dining Accessible</h3>
+                <p class="story-excerpt">How one restaurant is breaking down barriers in the culinary world.</p>
+                <div class="story-meta">Marcus Johnson • 11 min read</div>
+            </article>
+
+            <article class="story-card">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop" alt="Story 5" class="story-image">
+                <span class="story-category">TECHNOLOGY</span>
+                <h3 class="story-title">AI and the Future of Creativity</h3>
+                <p class="story-excerpt">Artists, writers, and musicians explore the potential and pitfalls of generative tools.</p>
+                <div class="story-meta">Priya Sharma • 13 min read</div>
+            </article>
+
+            <article class="story-card">
+                <img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600&h=400&fit=crop" alt="Story 6" class="story-image">
+                <span class="story-category">SOCIETY</span>
+                <h3 class="story-title">Community Gardens, Urban Revival</h3>
+                <p class="story-excerpt">How shared green spaces are transforming neighborhoods and fostering connection.</p>
+                <div class="story-meta">Lisa Chen • 8 min read</div>
+            </article>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <div class="newsletter-content">
+            <h2>Stay Connected</h2>
+            <p>Receive our weekly digest of thoughtful stories, delivered every Sunday morning.</p>
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Your email address" required>
+                <button type="submit" class="newsletter-button">SUBSCRIBE</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">MERIDIAN</div>
+                <p class="footer-tagline">An independent publication exploring the stories that shape our world.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Explore</h4>
+                <ul class="footer-links">
+                    <li><a href="#stories">Stories</a></li>
+                    <li><a href="#culture">Culture</a></li>
+                    <li><a href="#ideas">Ideas</a></li>
+                    <li><a href="#archive">Archive</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>About</h4>
+                <ul class="footer-links">
+                    <li><a href="#about">Our Mission</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#contribute">Write for Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#privacy">Privacy</a></li>
+                    <li><a href="#terms">Terms</a></li>
+                    <li><a href="#ethics">Ethics Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Meridian. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#twitter">Twitter</a>
+                <a href="#instagram">Instagram</a>
+                <a href="#linkedin">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                follower.style.left = e.clientX + 'px';
+                follower.style.top = e.clientY + 'px';
+            }, 100);
+        });
+
+        // Cursor hover effect on interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, input');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements
+        document.querySelectorAll('.section-header, .article-card, .story-card, .newsletter-content').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Stagger animation for story cards
+        const storyCards = document.querySelectorAll('.story-card');
+        storyCards.forEach((card, index) => {
+            card.style.transitionDelay = `${index * 0.1}s`;
+        });
+
+        const articleCards = document.querySelectorAll('.article-card');
+        articleCards.forEach((card, index) => {
+            card.style.transitionDelay = `${index * 0.15}s`;
+        });
+
+        // Newsletter form submission
+        document.querySelector('.newsletter-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.querySelector('.newsletter-input');
+            const button = document.querySelector('.newsletter-button');
+            
+            button.textContent = 'SUBSCRIBED ✓';
+            button.style.background = 'var(--accent-sage)';
+            input.value = '';
+            
+            setTimeout(() => {
+                button.textContent = 'SUBSCRIBE';
+                button.style.background = 'var(--accent-terracotta)';
+            }, 3000);
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
