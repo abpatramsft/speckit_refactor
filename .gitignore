@@ -1,0 +1,31 @@
+# IDE and Editor
+.vscode/
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
